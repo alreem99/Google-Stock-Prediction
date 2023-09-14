@@ -1,2 +1,8 @@
 # Google-Stock-Prediction
-The goal of collecting the dataset for "Google stock prediction" is to develop predictive models that can forecast future stock prices or trends for Google's stock, aiding investors and analysts in making informed decisions about buying, selling, or holding Google stock
+Project motivations
+
+<p>Google is one of the largest and most influential technology companies in the world, making it a highly relevant and significant dataset for financial analysis.</p> 
+
+<p> Analyzing and predicting its stock performance can provide insights into the success or failure of new technologies and their potential impact on the market.</p> 
+
+<p> Overall , choosing Google stock prediction as a dataset offers a unique opportunity to gain insights into the technology industry, market trends, and potential investment opportunities related to one of the world's largest companies.</p> 
