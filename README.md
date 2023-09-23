@@ -6,7 +6,7 @@ Project motivations:
 
 # student names:
 
-Rreem Alnasser - 443200497
+Reem Alnasser - 443200497
 
 Shaden Alturki - 443203057
 
