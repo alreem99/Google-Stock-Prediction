@@ -1,0 +1,144 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+#Sample of row
+```{r}
+dataset = read.csv('Google.csv') 
+
+View(dataset)
+```
+
+
+#statiscal summarise
+```{r}
+summary(dataset)
+```
+
+#mean of closing price
+
+```{r}
+mean(dataset$close)
+```
+
+# variance Code
+```{r}
+var(dataset$close)
+```
+
+#Graphs codes
+
+#Scatter Plot
+```{r}
+with(dataset, plot(volume, close))
+```
+
+
+#Box plot for close , high , low and open
+```{r}
+boxplot(dataset$close)
+boxplot(high ~ symbol , data = dataset)
+boxplot(low ~ symbol , data = dataset)
+boxplot(open ~ symbol , data = dataset)
+```
+
+#Histogram for Close
+```{r}
+hist(dataset$close)
+```
+
+#Data preprocessing 
+
+#Data cleaning
+# to find the total null values in the dataset
+#Checking NULL, FALSE means no null, TRUE cells means the value of the cell is null
+
+```{r}
+is.na(dataset)
+sum(is.na(dataset))
+
+print("Since there is no NULL values we don't need to remove any rows")
+```
+
+#Detecting outliers
+
+#removing close outlier
+```{r}
+library(outliers)
+
+OutClose = outlier(dataset$close, logical =TRUE)
+sum(OutClose)
+Find_outlier = which(OutClose ==TRUE, arr.ind = TRUE)
+OutClose
+Find_outlier
+```
+
+#removing volume's outlier
+```{r}
+OutVolume = outlier(dataset$volume, logical =TRUE)
+sum(OutVolume)
+Find_outlier = which(OutVolume ==TRUE, arr.ind = TRUE)
+OutVolume
+Find_outlier
+```
+
+
+#Remove outlier
+```{r}
+dataset= dataset[-Find_outlier,]
+```
+
+#data before preprocessing
+```{r}
+View(dataset)
+```
+
+
+#transformation
+
+#Normalization
+
+```{r}
+normalize <- function(x) {return ((x - min(x)) / (max(x) - min(x)))}
+dataWithoutNormalization <- dataset
+dataset$close<-normalize(dataWithoutNormalization$close)
+dataset$volume<-normalize(dataWithoutNormalization$volume)
+```
+
+#summary after preprocessing
+```{r}
+print(dataset)
+View(dataset)
+```
+
+##Discretization
+```{r}
+dataset$volume <- ifelse(dataset$volume <= 0.1411, "low",
+                         ifelse(dataset$volume <= 0.2141, "mediam","high" ))
+```
+# we choose for low  values the 1st Q , and for the mediam values we choose the Mean
+
+
+#Feature selection ,Feature selection using Recursive Feature Elimination or RFE
+```{r}
+    # load the library
+        library(mlbench)
+        library(caret)
+      
+        # define the control using a random forest selection function 
+          # number=12 means the length of the list
+        control <- rfeControl(functions=rfFuncs, method="cv", number=12)
+        # run the RFE algorithm from column 1 to 12  
+        results <- rfe(dataset[,1:11],dataset[,12], sizes=c(1:11), rfeControl=control)
+
+        # summarize the results
+        print(results)
+        # list the chosen features
+        predictors(results)
+
+        # plot the results
+        plot(results, type=c("h", "o"))
+
+```
+
