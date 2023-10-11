@@ -136,6 +136,7 @@ View(dataset)
 ```{r}
 dataset$volume <- ifelse(dataset$volume <= 0.1411, "low",
                          ifelse(dataset$volume <= 0.2141, "mediam","high" ))
+                             print(dataset)
 ```
 # we choose for low  values the 1st Q , and for the mediam values we choose the Mean
 
