@@ -97,6 +97,26 @@ View(dataset)
 
 #transformation
 
+#Feature selection ,Remove Redundant Features
+```{r}
+# load the library        
+library(mlbench)
+library(caret)
+library(ggplot2)
+library(lattice)
+
+# calculate correlation matrix
+correlationMatrix <- cor(dataset[,3:12])
+
+# summarize the correlation matrix
+print(correlationMatrix)
+
+# find attributes that are highly corrected (ideally >0.75)
+highlyCorrelated <- findCorrelation(correlationMatrix, cutoff=0.5 )
+
+# print indexes of highly correlated attributes
+print(highlyCorrelated)
+```
 #Normalization
 
 ```{r}
@@ -141,4 +161,3 @@ dataset$volume <- ifelse(dataset$volume <= 0.1411, "low",
         plot(results, type=c("h", "o"))
 
 ```
-
