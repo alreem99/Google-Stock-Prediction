@@ -582,4 +582,34 @@ wss <- numeric(length = 10)
 for (k in 1:10) {
   kmeans_model <- kmeans(dataset, centers = k, nstart = 10)
   wss[k] <- sum(kmeans_model$close)
+  
+ 
+  # Evaluate BCubed precision and recall for k-medoids
+  bcubed_kmedoids <- cluster.stats(dissimilarity_matrix, kmedoids_model$cluster)$bcubed
+  cat("\nBCubed Precision and Recall for K-Medoids Clustering:\n")
+  print(bcubed_kmedoids)
+  
+  # Extract the total within-cluster sum of squares (TWSS)
+  twss <- sum(kmeans.result$withinss)
+  # Print the TWSS
+  cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
+  
+  # Install and load required libraries
+  library(caret)
+  library(ggplot2)
+  library(lattice)
+  
+  
+  # Assuming you have true labels and predicted labels
+  true_labels <- c(1, 1, 1, 0, 0, 1, 0, 1, 0, 1)
+  predicted_labels <- c(1, 0, 1, 0, 0, 1, 0, 1, 1, 1)
+  
+  # Create a confusion matrix
+  conf_matrix <- confusionMatrix(factor(predicted_labels), factor(true_labels))
+  
+  # Extract recall from the confusion matrix
+  recall <- conf_matrix$byClass["Sensitivity"]
+  
+  # Print the result
+  cat(paste("Recall:", recall, "\n"))
 }
