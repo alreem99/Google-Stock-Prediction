@@ -299,6 +299,13 @@ print(dataset)
 
 **Feature selection**
 
+To improve the accuracy of our predictions for the target class
+"Predicted close" and decrease the processing time of our classifier, we
+will utilize feature selection techniques. These techniques enable us to
+eliminate redundant or irrelevant attributes from the dataset, resulting
+in a more concise subset of features that provide the most valuable
+information for our predictions
+
 Remove Redundant Features
 
 ```{r}
@@ -591,6 +598,19 @@ summary(CloseTree)
 plot(CloseTree)
 ```
 
+```{r}
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
 second one 60-40, which means Training(60%) and Testing(40%):
 
 ```{r}
@@ -715,6 +735,38 @@ CloseTree <- C5.0(myFormula, data=trainData)
 summary(CloseTree)
 plot(CloseTree)
 ```
+
+co_result \<- confusionMatrix(result)
+
+print(co_result) sensitivity(as.table(co_result))
+specificity(as.table(co_result)) precision(as.table(co_result))
+
+acc \<- co_result\$overall["Accuracy"] acc
+
+{r}
+
+co_result \<- confusionMatrix(result)
+
+print(co_result) sensitivity(as.table(co_result))
+specificity(as.table(co_result)) precision(as.table(co_result))
+
+acc \<- co_result\$overall["Accuracy"] acc
+
+co_result \<- confusionMatrix(result)
+
+print(co_result) sensitivity(as.table(co_result))
+specificity(as.table(co_result)) precision(as.table(co_result))
+
+acc \<- co_result\$overall["Accuracy"] acc
+
+{r}
+
+co_result \<- confusionMatrix(result)
+
+print(co_result) sensitivity(as.table(co_result))
+specificity(as.table(co_result)) precision(as.table(co_result))
+
+acc \<- co_result\$overall["Accuracy"] acc
 
 Third one 80-20, which means Training(80%) and Testing(20%):
 
