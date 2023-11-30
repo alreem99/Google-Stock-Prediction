@@ -298,7 +298,6 @@ print(dataset)
 -   **transformation**
 
 **Feature selection**
-To improve the accuracy of our predictions for the target class “Predicted close” and decrease the processing time of our classifier, we will utilize feature selection techniques. These techniques enable us to eliminate redundant or irrelevant attributes from the dataset, resulting in a more concise subset of features that provide the most valuable information for our predictions
 
 Remove Redundant Features
 
@@ -496,6 +495,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
@@ -559,6 +559,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
@@ -641,6 +642,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
@@ -692,6 +694,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
@@ -764,6 +767,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
@@ -816,6 +820,7 @@ co_result <- confusionMatrix(result)
 print(co_result)
 sensitivity(as.table(co_result))
 specificity(as.table(co_result))
+precision(as.table(co_result))
 
 acc <- co_result$overall["Accuracy"]
 acc
