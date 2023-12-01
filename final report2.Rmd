@@ -1152,6 +1152,94 @@ twss <- sum(kmeans.result$withinss)
 cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
 ```
 
+
+
+#The Close Price is an even more important metric  BCUBED to use because it captures the closing value, making it useful for analyzing long-term trends and overall performance.
+#3- Calculate the BCubed Precision
+
+#3.1: Precision of acquired in 2-mean clusters after finding out how many acquired items are in each cluster
+
+acquired2Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster1=print(1*100/1)
+
+acquired2Clust1<-print(sum(dataset$opean[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster2=print(549*100/770)
+
+#3.1: Precision of acquired in 3-mean clusters after finding out how many acquired items are in each cluster
+
+acquired3Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+PreOf3Cluster1=print(51*100/63)
+
+acquired3Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+PreOf3Cluster2=print(498*100/707)
+
+acquired3Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
+PreOf3Cluster3=print(1*100/1)
+
+#3.1: Precision of acquired in 4-mean clusters after finding out how many acquired items are in each cluster
+
+acquired4Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+PreOf4Cluster1=print(438*100/623)
+
+acquired4Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+PreOf4Cluster2=print(102*100/134)
+
+acquired4Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
+PreOf4Cluster3=print(9*100/13)
+
+acquired4Clust4<-print(sum(dataset$close[kmeans.result$cluster =="4"]== "acquired", na.rm = TRUE))
+
+PreOf4Cluster4=print(1*100/1)
+
+#4- Calculate the BCubed Recall
+#4.1: Recall of acquired in 2-mean clusters
+
+Recall1Clust1= print(1*100/550) 
+Recall1Clust2= print(549*100/550)
+
+#4.2: Recall of acquired in 3-mean clusters 
+  
+Recall3Clust1= print(51*100/550) 
+Recall3Clust2= print(498*100/550)
+Recall3Clust3= print(1*100/550)
+
+#4.3: Recall of acquired in 4-mean clusters 
+  
+Recall4Clust1= print(438*100/550) 
+Recall4Clust2= print(102*100/550)
+Recall4Clust3= print(9*100/550)
+Recall4Clust4= print(1*100/550)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r}
 # Evaluate BCubed precision and recall for k-medoids
 # Install and load required libraries
