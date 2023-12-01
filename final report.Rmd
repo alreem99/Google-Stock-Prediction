@@ -1257,24 +1257,99 @@ cat(paste("Recall:", recall, "\n"))
 ```
 
 
-#  4.  Findings
+#  7.  Findings
+
 Our dataset represents opening and closing prices of google stocks in market. Our goal was to predict higher closing prices that indicate a positive trend in Google stock. 
 To have the best, accurate, and precise results we used several data mining preprocessing techniques that improve the efficiency of the data. applied several plotting methods was applied to help us understand our data. Based on plots we removed outliers, we didn’t find any null or missing values. And then data transformation was applied to transform attribute values such as normalization discretization.
 
 Then we applied the data mining tasks, that are classification and clustering. 
 For classification, we use the decision tree method to construct our model, 3 different sizes of training and testing data were used to get the best result for construction and evaluation.
-the following results for diffrernt sizes:
-- 70% Training data, 30% Test data, accuracy = 0. 9865229%
-- 60% Training data, 40% Test data, accuracy = 0. 988024%
-- 80% Training data, 20% Test data, accuracy = 0. 9843137%
-In conclusion, the most accurate model was the second model with 60% training data and 40% test data which means that most tuples were correctly classified.
+the following results for different sizes:
+
+- 70% Training and 30% Testing data
+- Information Gain:
+  Accuracy = 0.9865229
+  precision = 
+  sensitivity = 0.9959016 
+  specificity = 0.9685039 
+  
+- Information Gain ratio:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+  
+- Information Gain index:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+  
+- 60% Training and 40% Testing data
+- Information Gain:
+  Accuracy = 0.988024
+  precision = 
+  sensitivity = 0.9969512 
+  specificity = 0.9710983 
+  
+- Information Gain ratio:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+  
+- Information Gain index:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+  
+- 80% Training and 20% Testing data
+- Information Gain:
+  Accuracy = 0.9843137
+  precision = 
+  sensitivity = 0.9940476 
+  specificity = 0.9655172 
+  
+- Information Gain ratio:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+  
+- Information Gain index:
+  Accuracy = 
+  precision = 
+  sensitivity = 
+  specificity = 
+
+
+In conclusion, the most accurate model and the best spilting in our dataset is the Training(60%) and Testing(40%) because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8.
 
 For Clustering, 3 different sizes K were used in K-means algorithm to find the optimal number of clusters. average silhouette width for each K was calculated to conclude shown results.
 
-- Number of cluster(K)= 4, the average silhouette width=0.43
-- Number of cluster(K)= 3, the average silhouette width=0.37
-- Number of cluster(K)= 2, the average silhouette width=0.45
+- Number of cluster(K)= 4 
+  average silhouette width=0.43
+  sum of squares= 1900.127
+  BCubed precision= 
+  BCubed recall= 
+  
+- Number of cluster(K)= 3
+  average silhouette width=0.37
+  sum of squares= 2908.955
+  BCubed precision= 
+  BCubed recall= 
+  
+- Number of cluster(K)= 2
+  average silhouette width=0.45
+  sum of squares= 4126
+  BCubed precision= 
+  BCubed recall= 
 
 Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.  
 At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
+
+#  7.  Refrences
+
+
 
