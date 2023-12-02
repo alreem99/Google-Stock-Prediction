@@ -1234,72 +1234,27 @@ twss <- sum(kmeans.result$withinss)
 cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
 ```
 
-#The Close Price is an even more important metric  BCUBED to use because it captures the closing value, making it useful for analyzing long-term trends and overall performance.
-
-#3- Calculate the BCubed Precision
-
-#3.1: Precision of acquired in 2-mean clusters after finding out how many acquired items are in each cluster
-
-acquired2Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
-
-PreOf2Cluster1=print(1*100/1)
-
-acquired2Clust1<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
-
-PreOf2Cluster2=print(549*100/770)
-
-#3.1: Precision of acquired in 3-mean clusters after finding out how many acquired items are in each cluster
-
-acquired3Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
-PreOf3Cluster1=print(51*100/63)
-
-acquired3Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
-PreOf3Cluster2=print(498*100/707)
-
-acquired3Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
-PreOf3Cluster3=print(1*100/1)
-
-#3.1: Precision of acquired in 4-mean clusters after finding out how many acquired items are in each cluster
-
-acquired4Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
-PreOf4Cluster1=print(438*100/623)
-
-acquired4Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
-PreOf4Cluster2=print(102*100/134)
-
-acquired4Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
-PreOf4Cluster3=print(9*100/13)
-
-acquired4Clust4<-print(sum(dataset$close[kmeans.result$cluster =="4"]== "acquired", na.rm = TRUE))
-
-PreOf4Cluster4=print(1*100/1)
-
-#4- Calculate the BCubed Recall
-#4.1: Recall of acquired in 2-mean clusters
-
-Recall1Clust1= print(1*100/550) 
-Recall1Clust2= print(549*100/550)
-
-#4.2: Recall of acquired in 3-mean clusters 
-  
-Recall3Clust1= print(51*100/550) 
-Recall3Clust2= print(498*100/550)
-Recall3Clust3= print(1*100/550)
-
-#4.3: Recall of acquired in 4-mean clusters 
-  
-Recall4Clust1= print(438*100/550) 
-Recall4Clust2= print(102*100/550)
-Recall4Clust3= print(9*100/550)
-Recall4Clust4= print(1*100/550)
+```{r}
+# Evaluate BCubed precision and recall for k-medoids
+# Install and load required libraries
+library(caret)
+library(ggplot2)
+library(lattice)
 
 
+# Assuming you have true labels and predicted labels
+true_labels <- c(1, 1, 1, 0, 0, 1, 0, 1, 0, 1)
+predicted_labels <- c(1, 0, 1, 0, 0, 1, 0, 1, 1, 1)
 
+# Create a confusion matrix
+conf_matrix <- confusionMatrix(factor(predicted_labels), factor(true_labels))
 
+# Extract recall from the confusion matrix
+recall <- conf_matrix$byClass["Sensitivity"]
 
-
-
-
+# Print the result
+cat(paste("Recall:", recall, "\n"))
+```
 
 
 #  7.  Findings
@@ -1384,42 +1339,18 @@ For Clustering, 3 different sizes K were used in K-means algorithm to find the o
 
 - Number of cluster(K)= 4 
 
-  average silhouette width=0.43, sum of squares= 1900.127
-  
-  Recall and precision of acquired in 4-mean clusters 
-  BCubed precision= 70.30498  BCubed recall=  79.63636
-  BCubed precision=  76.1194  BCubed recall=   18.54545
-  BCubed precision= 69.23077  BCubed recall=  1.636364
-  BCubed precision= 100       BCubed recall=  0.1818182
-  
+
+  average silhouette width=0.43, sum of squares= 1900.127, BCubed precision= BCubed recall= 
   
 - Number of cluster(K)= 3
 
+
   average silhouette width=0.37, sum of squares= 2908.955, BCubed precision=  BCubed recall= 
   
-  Recall and precision of acquired in 3-mean clusters 
-  BCubed precision= 80.95238   BCubed recall=  9.272727
-  BCubed precision=  70.43847  BCubed recall=  90.54545
-  BCubed precision= 100        BCubed recall=  0.1818182
- 
-  
-
 - Number of cluster(K)= 2
 
 
-  average silhouette width=0.45, sum of squares= 4126
-  
-     Recall and precision of acquired in 2-mean clusters 
-  
-  BCubed precision= 100   BCubed recall=   0.1818182
-  BCubed precision=  71.2987  BCubed recall=  99.81818
-        
-  
-  
-  
-  
-  
-  
+  average silhouette width=0.45, sum of squares= 4126, BCubed precision= BCubed recall= 
 
 Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.  
 At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
