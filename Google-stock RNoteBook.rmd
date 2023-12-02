@@ -427,7 +427,7 @@ trainData  <- dataset[ind1==1,]
 testData <- dataset[ind1==2,]
 ```
 
-2.  Determine the predictor attributes and the class label attribute.( the formula):
+2.  Determine the predictor attributes and the class label attribute.( the formula): we chose these attriputes because traders and financial analysts often use volume, opening prices, high prices, and low prices as key indicators in their analyses. also because it is represent different aspects of stock performance, could be relevant
 
 ```{r}
 library(party) 
@@ -449,7 +449,46 @@ table(predict(dataset_ctree), trainData$close)
 print(dataset_ctree)
 plot(dataset_ctree, type="simple")
 ```
+ **outcomes from this tree:**
+Number of Observations: 771 - This indicates the number of data points or samples used to train or construct the tree.
+and it has seven nodes we also see that the open will be the root which means it has a high effective on the dataset
+about the structure :
 
+Root Node (Node 1):
+Condition: 
+open
+≤
+0.2974608
+open≤0.2974608
+If true, go to Node 2; if false, go to Node 5.
+Node 2:
+Condition: 
+high
+≤
+0.2892353
+high≤0.2892353
+If true, go to Node 3; if false, go to Node 4.
+Node 3 (Leaf Node):
+Prediction based on conditions (267 observations).
+Node 4 (Leaf Node):
+Another prediction based on conditions (17 observations).
+Node 5:
+Condition: 
+low
+≤
+0.2955676
+low≤0.2955676
+If true, go to Node 6; if false, go to Node 7.
+
+Node 6 (Leaf Node):
+Prediction based on conditions (11 observations).
+
+Node 7 (Leaf Node):
+Prediction based on conditions (476 observations).
+Leaf Nodes (Terminal Nodes):
+
+Contain predictions for the "close" variable based on specific conditions.
+The "weights" values indicate the number of observations in each category.
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
 testPred <- predict(dataset_ctree, newdata = testData)
@@ -497,6 +536,14 @@ Visualizing the unpruned tree
 library(rpart.plot)
 rpart.plot(dataset.cart)
 ```
+
+**outcomes from this tree:**
+in this tree Each node provides information such as the number of observations (n), the number of misclassifications (loss), the predicted value (yval), and the class probabilities (yprob)
+
+-Terminal nodes represent final decision outcomes based on specific conditions.
+Node 2 indicates that if 'open' is < 0.3 , the prediction will be close with a high probability (62%). and if it is > 0.3 it has a low probability (38%)
+
+The Gini Index is used at each step to find the optimal splits that minimize impurity and create pure nodes.
 
 Checking the order of variable importance
 
@@ -551,6 +598,7 @@ CloseTree <- C5.0(myFormula, data=trainData)
 summary(CloseTree)
 plot(CloseTree)
 ```
+the model performs 10 splits with the root being the low either >0.92 or <=0.92 then the second split after the low is the high being either >0.289 or <=0.289 and so on the decision tree shows that besade on the open we can know the number on eash node and open is the same important attribute(from feature selection)
 
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
@@ -608,6 +656,40 @@ table(predict(dataset_ctree), trainData$close)
 print(dataset_ctree)
 plot(dataset_ctree, type="simple")
 ```
+**outcomes from this tree:**
+With a 60-40 split, you would allocate approximately 393 observations (60%) to the training set and 262 observations (40%) to the test set. 
+we also notced that there is no different between this tree and the tree with 70-30 spliting
+about the structure :
+
+Node 1:
+Condition: 
+open
+≤
+0.2974608
+open≤0.2974608
+If true, go to Node 2; if false, go to Node 5.
+Node 2:
+Condition: 
+high
+≤
+0.2892353
+high≤0.2892353
+If true, go to Node 3; if false, go to Node 4.
+Node 3 (Leaf Node):
+Terminal node with a prediction. The "weights" value (235) indicates the number of observations that fall into this category.
+Node 4 (Leaf Node):
+Another terminal node with a prediction. The "weights" value (12) represents the number of observations in this category.
+Node 5:
+Condition: 
+low
+≤
+0.2955676
+low≤0.2955676
+If true, go to Node 6; if false, go to Node 7.
+Node 6 (Leaf Node):
+Terminal node where predictions are based on the specified conditions. The "weights" value (10) indicates the number of observations.
+Node 7 (Leaf Node):
+Another terminal node with predictions. The "weights" value (398) represents the number of observations that satisfy the conditions leading to this node
 
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
@@ -651,6 +733,14 @@ Visualizing the unpruned tree
 ```{r}
 rpart.plot(dataset.cart)
 ```
+
+
+**outcomes from this tree:**
+in this tree Each node provides information such as the number of observations (n), the number of misclassifications (loss), the predicted value (yval), and the class probabilities (yprob)
+
+-Terminal nodes represent final decision outcomes based on specific conditions.
+Node 2 indicates that if 'open' is < 0.3 , the prediction will be close with a high probability (61%). and if it is > 0.3 it has a low probability (39%)
+
 
 Checking the order of variable importance
 
@@ -703,6 +793,25 @@ CloseTree <- C5.0(myFormula, data=trainData)
 summary(CloseTree)
 plot(CloseTree)
 ```
+**outcomes from this tree:**
+Size of the Tree: The decision tree has a size of 2, indicating that it has two nodes.
+
+Errors: The model made a total of 7 errors on the training data, which corresponds to 1.1% of the cases.
+
+Confusion Matrix:
+
+Class (a): There are 248 instances of class 1. The model correctly classified 248 instances as class 1.
+Class (b): There are 406 instances of class 2. The model correctly classified 400 instances as class 2.
+Misclassifications:
+1 instance of class 1 was misclassified as class 2.
+6 instances of class 2 were misclassified as class 1.
+Interpretation:
+
+The confusion matrix provides a summary of how well the decision tree model performed on the training data.
+Overall, the model achieved a high accuracy, with only 7 errors out of 655 cases (1.1% error rate).
+It correctly classified the majority of instances for both class 1 and class 2.
+The misclassifications are shown in the off-diagonal elements of the confusion matrix
+
 
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
@@ -761,6 +870,38 @@ table(predict(dataset_ctree), trainData$close)
 print(dataset_ctree)
 plot(dataset_ctree, type="simple")
 ```
+**outcomes from this tree:**
+
+Node 1:
+Condition: 
+open
+≤
+0.2974608
+open≤0.2974608
+If true, go to Node 2; if false, go to Node 5.
+Node 2:
+Condition: 
+high
+≤
+0.2892353
+high≤0.2892353
+If true, go to Node 3; if false, go to Node 4.
+Node 3 (Leaf Node):
+Terminal node with a prediction. The "weights" value (303) indicates the number of observations that fall into this category.
+Node 4 (Leaf Node):
+Another terminal node with a prediction. The "weights" value (19) represents the number of observations in this category.
+Node 5:
+Condition: 
+low
+≤
+0.2997876
+low≤0.2997876
+If true, go to Node 6; if false, go to Node 7.
+Node 6 (Leaf Node):
+Terminal node where predictions are based on the specified conditions. The "weights" value (14) indicates the number of observations.
+Node 7 (Leaf Node):
+Another terminal node with predictions. The "weights" value (535) represents the number of observations that satisfy the conditions leading to this node
+
 
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
@@ -805,6 +946,11 @@ Visualizing the unpruned tree
 library(rpart.plot)
 rpart.plot(dataset.cart)
 ```
+**outcomes from this tree:**
+in this tree Each node provides information such as the number of observations (n), the number of misclassifications (loss), the predicted value (yval), and the class probabilities (yprob)
+
+-Terminal nodes represent final decision outcomes based on specific conditions.
+Node 2 indicates that if 'open' is < 0.3 , the prediction will be close with a high probability (62%). and if it is > 0.3 it has a low probability (38%) which is as same as 70-30 spliting , and thats lead us to think that they are alike 
 
 Checking the order of variable importance
 
@@ -862,6 +1008,9 @@ testPred <- predict(CloseTree, newdata = testData)
 result<-table(testPred, testData$close)
 result
 ```
+The model shows a slightly improved specificity and precision compared to the previous ones(the one performed on 70-30 split and  60-20 ) 
+(specificity and precision  was 99%  and %97 while this one is 100% = 1).
+Sensitivity and accuracy are both high and more balanced than the previous decision tree on 70-30 split and  60-20. indicating better performance in correctly identifying the positive class, but since its no big of a difference we may choose this as a better model than the previous one
 
 ```{r}
 # Evaluate the model and create confusion matrix
@@ -904,7 +1053,7 @@ Clustering is unsupervised learning, it doesn't use a class label for implementi
 factoextra packages is used to help in implementing the clustering technique. scale() method is used for scaling and centering of data set objects, Kmeans() method to find a specified number of clusters. fviz_cluster() method to visualize the clusters diagram. silhouette() method to calculate the average for each cluster, fviz_silhouette() to visualize it, and fviz_nbclust() method to set a comparison between the three different numbers of clusters to find the optimal number by evaluating the clusters according to how well the clusters are separated, and how compact the clusters are. In both techniques, we used the method set.seed() with the same random number each time we try a different size to ensure that we get the same result each time.
 
 Data types should be transformed into numeric types before clustering.
-
+we also exclude the dates since it dose not determine or effect the dataset nor the clustring
 ```{r}
 # prepreocessing 
 #Data types should be transformed into numeric types before clustering.
@@ -950,7 +1099,7 @@ kmeans.result$tot.withinss
 #bcubed metrix that take the avg of precision&recall
 library('DPBBM')
 c = kmeans.result$cluster
-BCubed_metric(kmeans.result$cluster, 0.5)
+BCubed_metric(kmeans.result$cluster, 0.6)
 ```
 
 print the clustering result
@@ -1235,6 +1384,8 @@ Then we applied the data mining tasks, that are classification and clustering. F
 
 In conclusion, the most accurate model and the best spilting in our dataset is the Training(60%) and Testing(40%) because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8 precision=%96
 
+but for the gain ratio we noted that the Training(80%) and Testing(20%) is more better since it has the highest percentage among all split with specificity precision equal to 1 and Accuracy = %99.5 
+
 For Clustering, 3 different sizes K were used in K-means algorithm to find the optimal number of clusters. average silhouette width for each K was calculated to conclude shown results.
 
 -   Number of cluster(K)= 4
@@ -1270,7 +1421,8 @@ For Clustering, 3 different sizes K were used in K-means algorithm to find the o
 +------------------------------------+------------+------------+------------+
 
 Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.\
-At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
+At the end, both models are helpful and helped us in predicting. 
+But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
 
 # 8. Refrences
 
