@@ -2,8 +2,8 @@
 title: "R Notebook"
 output: html_notebook
 editor_options: 
-  markdown: 
-  wrap: 72
+markdown: 
+wrap: 72
 ---
 
 \# **Closing price of Google Stock Prediction**
@@ -26,7 +26,37 @@ Number of objects: 1258
 
 Attribute characteristics:
 
-+------------+---------+-----------------------------------------------+ \| Attribute \| Data \| Description \| \| Name \| Type \| \| +------------+---------+-----------------------------------------------+ \| symbol \| unique \| Name of company \| \| \| value \| \| +------------+---------+-----------------------------------------------+ \| date \| numeric \| date: day, month, and year. \| +------------+---------+-----------------------------------------------+ \| close \| numeric \| closing price of a stock is the final price \| \| \| \| at which a stock is traded on a given trading \| \| \| \| day. \| +------------+---------+-----------------------------------------------+ \| high \| numeric \| The highest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| low \| numeric \| The lowest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| open \| numeric \| The price of a stock at the beginning of a \| \| \| \| trading day. It's the price at which the \| \| \| \| first trade occurred on that day. \| +------------+---------+-----------------------------------------------+ \| Volume \| numeric \| The total number of shares traded during a \| \| \| \| trading day. Volume is a measure of market \| \| \| \| activity and liquidity for a stock \| +------------+---------+-----------------------------------------------+ \| adjClose \| \| The closing price of a stock adjusted for any \| \| \| numeric \| corporate actions like dividends, stock \| \| \| \| splits, or other events that could affect the \| \| \| \| stock price. \| +------------+---------+-----------------------------------------------+ \| adjHigh \| numeric \| The highest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions \| +------------+---------+-----------------------------------------------+ \| adjLow \| numeric \| The lowest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions. \| +------------+---------+-----------------------------------------------+ \| adjOpen \| numeric \| The opening price of a stock at the beginning \| \| \| \| of a trading day, adjusted for any corporate \| \| \| \| actions. \| +------------+---------+-----------------------------------------------+ \| adjVolume \| numeric \| The trading volume of a stock adjusted for \| \| \| \| any corporate actions. This can provide a \| \| \| \| clearer picture of tranding activity. \| +------------+---------+-----------------------------------------------+ \| divCash \| Binary \| The amount of money paid by a company to its \| \| \| \| shareholders as a portion of its profits. \| \| \| \| Dividends are typically paid on a per-share \| \| \| \| basis \| +------------+---------+-----------------------------------------------+ \| s \| Binary \| If a stock undergoes a stock split, the split \| \| plitFactor \| \| factor indicates the ratio by which the \| \| \| \| shares were split. For instance, a 2-for-1 \| \| \| \| split means that for every old share, you now \| \| \| \| have 2 new shares. \| +------------+---------+-----------------------------------------------+
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Attribute Name | Data Type    | Description                                                                                                                                                                                       |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| symbol         | unique value | Name of company                                                                                                                                                                                   |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| date           | numeric      | date: day, month, and year.                                                                                                                                                                       |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| close          | numeric      | closing price of a stock is the final price at which a stock is traded on a given trading day.                                                                                                    |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| high           | numeric      | The highest price at which a stock traded during a specific trading day.                                                                                                                          |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| low            | numeric      | The lowest price at which a stock traded during a specific trading day.                                                                                                                           |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| open           | numeric      | The price of a stock at the beginning of a trading day. It's the price at which the first trade occurred on that day.                                                                             |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Volume         | numeric      | The total number of shares traded during a trading day. Volume is a measure of market activity and liquidity for a stock                                                                          |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adjClose       | numeric      | The closing price of a stock adjusted for any corporate actions like dividends, stock splits, or other events that could affect the stock price.                                                  |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adjHigh        | numeric      | The highest price of a stock during a trading day, adjusted for any corporate actions                                                                                                             |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adjLow         | numeric      | The lowest price of a stock during a trading day, adjusted for any corporate actions.                                                                                                             |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adjOpen        | numeric      | The opening price of a stock at the beginning of a trading day, adjusted for any corporate actions.                                                                                               |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| adjVolume      | numeric      | The trading volume of a stock adjusted for any corporate actions. This can provide a clearer picture of tranding activity.                                                                        |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| divCash        | Binary       | The amount of money paid by a company to its shareholders as a portion of its profits. Dividends are typically paid on a per-share basis                                                          |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| s plitFactor   | Binary       | If a stock undergoes a stock split, the split factor indicates the ratio by which the shares were split. For instance, a 2-for-1 split means that for every old share, you now have 2 new shares. |
++----------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ```{r}
 # Load necessary packages
@@ -1123,6 +1153,64 @@ twss <- sum(kmeans.result$withinss)
 # Print the TWSS
 cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
 ```
+```{r}
+#3- Calculate the BCubed Precision
+
+#3.1: Precision of acquired in 2-mean clusters after finding out how many acquired items are in each cluster
+
+acquired2Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster1=print(1*100/1)
+
+acquired2Clust1<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster2=print(549*100/770)
+
+#3.1: Precision of acquired in 3-mean clusters after finding out how many acquired items are in each cluster
+
+acquired3Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+PreOf3Cluster1=print(51*100/63)
+
+acquired3Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+PreOf3Cluster2=print(498*100/707)
+
+acquired3Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
+PreOf3Cluster3=print(1*100/1)
+
+#3.1: Precision of acquired in 4-mean clusters after finding out how many acquired items are in each cluster
+
+acquired4Clust1<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+PreOf4Cluster1=print(438*100/623)
+
+acquired4Clust2<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+PreOf4Cluster2=print(102*100/134)
+
+acquired4Clust3<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE))
+PreOf4Cluster3=print(9*100/13)
+
+acquired4Clust4<-print(sum(dataset$close[kmeans.result$cluster =="4"]== "acquired", na.rm = TRUE))
+
+PreOf4Cluster4=print(1*100/1)
+
+#4- Calculate the BCubed Recall
+#4.1: Recall of acquired in 2-mean clusters
+
+Recall1Clust1= print(1*100/550) 
+Recall1Clust2= print(549*100/550)
+
+#4.2: Recall of acquired in 3-mean clusters 
+  
+Recall3Clust1= print(51*100/550) 
+Recall3Clust2= print(498*100/550)
+Recall3Clust3= print(1*100/550)
+
+#4.3: Recall of acquired in 4-mean clusters 
+  
+Recall4Clust1= print(438*100/550) 
+Recall4Clust2= print(102*100/550)
+Recall4Clust3= print(9*100/550)
+Recall4Clust4= print(1*100/550)
+```
 
 # 7. Findings
 
@@ -1140,10 +1228,10 @@ Then we applied the data mining tasks, that are classification and clustering. F
 
 |             | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex |
 |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-| Accuracy    | %98.6 |          | %98.6      | %98.4 |          | %98.4      | %98.8 |          | %98.8      |
-| precision   | %97.3 |          | %97.3      | %97.3 |          | %97.3      | %96   |          | %96        |
-| sensitivity | %99.5 |          | %99.5      | %99.4 |          | %99.4      | %99.4 |          | %99.4      |
-| specificity | %96.8 |          | %96.8      | %96.5 |          | %96.5      | %96.5 |          | %96.5      |
+| Accuracy    | %98.6 | %99      | %98.6      | %98.4 | %99.5    | %98.4      | %98.8 | %98.8    | %98.8      |
+| precision   | %97.3 | 99       | %97.3      | %97.3 | 1        | %97.3      | %96   | %97.3    | %96        |
+| sensitivity | %99.5 | %98.2    | %99.5      | %99.4 | %98.6    | %99.4      | %99.4 | %99.3    | %99.4      |
+| specificity | %96.8 | %99.5    | %96.8      | %96.5 | 1        | %96.5      | %96.5 | %98.6    | %96.5      |
 
 In conclusion, the most accurate model and the best spilting in our dataset is the Training(60%) and Testing(40%) because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8 precision=%96
 
@@ -1169,17 +1257,17 @@ For Clustering, 3 different sizes K were used in K-means algorithm to find the o
 
     average silhouette width=0.45, sum of squares= 4126
 
-+------------------------------------+-------------+-------------+-------------+
-|                                    | K=4         | K=3         | K=2         |
-+====================================+=============+=============+=============+
-| average silhouette width           | 0.43        | 0.37        | 0.45        |
-+------------------------------------+-------------+-------------+-------------+
-| total withn-cluster sum of squares | 1900.127    | 2908.955    | 4126        |
-+------------------------------------+-------------+-------------+-------------+
-| BCubed precision                   | 70.30498    | 80.95238    | 100         |
-+------------------------------------+-------------+-------------+-------------+
-| BCubed recall                      | 79.63636    | 9.272727    | 0.1818182   |
-+------------------------------------+-------------+-------------+-------------+
++------------------------------------+------------+------------+------------+
+|                                    | K=4        | K=3        | K=2        |
++====================================+============+============+============+
+| average silhouette width           | 0.43       | 0.37       | 0.45       |
++------------------------------------+------------+------------+------------+
+| total withn-cluster sum of squares | 1900.127   | 2908.955   | 4126       |
++------------------------------------+------------+------------+------------+
+| BCubed precision                   | 70.30498   | 80.95238   | 100        |
++------------------------------------+------------+------------+------------+
+| BCubed recall                      | 79.63636   | 9.272727   | 0.1818182  |
++------------------------------------+------------+------------+------------+
 
 Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.\
 At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
