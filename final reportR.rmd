@@ -128,9 +128,7 @@ print(dataset)
 we removed the attributes (symbol, divCash, splitFactor) as they have
 one value only so we do not need them
 
-```{r}
-dataset=dataset[,2:12]
-```
+
 
 
 *Convert the date column to a date format*
@@ -334,7 +332,7 @@ library(ggplot2)
 library(lattice)
 
 # calculate correlation matrix
-correlationMatrix <- cor(dataset[,2:11])
+correlationMatrix <- cor(dataset[,3:10])
 
 # summarize the correlation matrix
 print(correlationMatrix)
@@ -372,9 +370,11 @@ modeling for stock predaction with result as shown.
 ```{r}
 normalize <- function(x) {return ((x - min(x)) / (max(x) - min(x)))}
 dataWithoutNormalization <- dataset
-
+dataset$close<-normalize(dataWithoutNormalization$close)
 dataset$volume<-normalize(dataWithoutNormalization$volume)
-dataset$adjvolume<-normalize(dataWithoutNormalization$volume)
+dataset$open<-normalize(dataWithoutNormalization$open)
+dataset$low <-normalize(dataWithoutNormalization$low)
+dataset$high <-normalize(dataWithoutNormalization$high)
 
 ```
 
@@ -467,8 +467,9 @@ performance.
 Elimination or RFE
 
 ```{r}
-    library(mlbench)
+library(mlbench)
 library(caret)
+
 
 # define the control using a random forest selection function 
 # number=12 means the length of the list
@@ -536,7 +537,8 @@ testData <- dataset[ind1==2,]
 2. Determine the predictor attributes and the class label attribute.( the formula):
 
 ```{r}
-library(party)    
+library(party) 
+library(grid) 
 #myFormula 
 myFormula <- close ~volume+open+high+low
 
@@ -696,7 +698,8 @@ testData <- dataset[ind1==2,]
 2. Determine the predictor attributes and the class label attribute.( the formula):
 
 ```{r}
-library(party)    
+library(party) 
+library(grid)
 #myFormula 
 myFormula <- close ~volume+open+high+low
 ```
@@ -827,7 +830,8 @@ testData <- dataset[ind1==2,]
 2.Determine the predictor attributes and the class label attribute.( the formula):
 
 ```{r}
-library(party)    
+library(party)  
+library(grid)
 #myFormula 
 myFormula <- close ~volume+open+high+low
 
@@ -975,7 +979,7 @@ Data types should be transformed into numeric types before clustering.
 ```{r}
 # prepreocessing 
 #Data types should be transformed into numeric types before clustering.
-dataset <- scale(dataset)
+dataset <- scale(close)
 View(dataset)
 ```
 
@@ -1017,7 +1021,7 @@ kmeans.result$tot.withinss
 #bcubed metrix that take the avg of precision&recall
 library('DPBBM')
 c = kmeans.result$cluster
-BCubed_metric(kmeans.result$cluster, 0.50)
+BCubed_metric(kmeans.result$cluster, 0.5)
 ```
 
 print the clustering result
@@ -1235,9 +1239,6 @@ cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
 
 ```{r}
 # Evaluate BCubed precision and recall for k-medoids
-
-
-
 #The Close Price is an even more important metric  BCUBED to use because it captures the closing value, making it useful for analyzing long-term trends and overall performance.
 
 #3- Calculate the BCubed Precision
