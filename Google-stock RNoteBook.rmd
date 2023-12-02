@@ -25,8 +25,64 @@ Number of Attributes: 14
 Number of objects: 1258
 
 Attribute characteristics:
-
-+------------+---------+-----------------------------------------------+ \| Attribute \| Data \| Description \| \| Name \| Type \| \| +------------+---------+-----------------------------------------------+ \| symbol \| unique \| Name of company \| \| \| value \| \| +------------+---------+-----------------------------------------------+ \| date \| numeric \| date: day, month, and year. \| +------------+---------+-----------------------------------------------+ \| close \| numeric \| closing price of a stock is the final price \| \| \| \| at which a stock is traded on a given trading \| \| \| \| day. \| +------------+---------+-----------------------------------------------+ \| high \| numeric \| The highest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| low \| numeric \| The lowest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| open \| numeric \| The price of a stock at the beginning of a \| \| \| \| trading day. It's the price at which the \| \| \| \| first trade occurred on that day. \| +------------+---------+-----------------------------------------------+ \| Volume \| numeric \| The total number of shares traded during a \| \| \| \| trading day. Volume is a measure of market \| \| \| \| activity and liquidity for a stock \| +------------+---------+-----------------------------------------------+ \| adjClose \| \| The closing price of a stock adjusted for any \| \| \| numeric \| corporate actions like dividends, stock \| \| \| \| splits, or other events that could affect the \| \| \| \| stock price. \| +------------+---------+-----------------------------------------------+ \| adjHigh \| numeric \| The highest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions \| +------------+---------+-----------------------------------------------+ \| adjLow \| numeric \| The lowest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions. \| +------------+---------+-----------------------------------------------+ \| adjOpen \| numeric \| The opening price of a stock at the beginning \| \| \| \| of a trading day, adjusted for any corporate \| \| \| \| actions. \| +------------+---------+-----------------------------------------------+ \| adjVolume \| numeric \| The trading volume of a stock adjusted for \| \| \| \| any corporate actions. This can provide a \| \| \| \| clearer picture of tranding activity. \| +------------+---------+-----------------------------------------------+ \| divCash \| Binary \| The amount of money paid by a company to its \| \| \| \| shareholders as a portion of its profits. \| \| \| \| Dividends are typically paid on a per-share \| \| \| \| basis \| +------------+---------+-----------------------------------------------+ \| s \| Binary \| If a stock undergoes a stock split, the split \| \| plitFactor \| \| factor indicates the ratio by which the \| \| \| \| shares were split. For instance, a 2-for-1 \| \| \| \| split means that for every old share, you now \| \| \| \| have 2 new shares. \| +------------+---------+-----------------------------------------------+
+  
+  +------------+---------+-----------------------------------------------+
+  | Attribute  | Data    | Description                                   |
+  | Name       | Type    |                                               |
+  +------------+---------+-----------------------------------------------+
+  | symbol     | unique  | Name of company                               |
+  |            | value   |                                               |
+  +------------+---------+-----------------------------------------------+
+  | date       | numeric | date: day, month, and year.                   |
+  +------------+---------+-----------------------------------------------+
+  | close      | numeric | closing price of a stock is the final price   |
+  |            |         | at which a stock is traded on a given trading |
+  |            |         | day.                                          |
+  +------------+---------+-----------------------------------------------+
+  | high       | numeric | The highest price at which a stock traded     |
+  |            |         | during a specific trading day.                |
+  +------------+---------+-----------------------------------------------+
+  | low        | numeric | The lowest price at which a stock traded      |
+  |            |         | during a specific trading day.                |
+  +------------+---------+-----------------------------------------------+
+  | open       | numeric | The price of a stock at the beginning of a    |
+  |            |         | trading day. It's the price at which the      |
+|            |         | first trade occurred on that day.             |
++------------+---------+-----------------------------------------------+
+| Volume     | numeric | The total number of shares traded during a    |
+|            |         | trading day. Volume is a measure of market    |
+|            |         | activity and liquidity for a stock            |
++------------+---------+-----------------------------------------------+
+| adjClose   |         | The closing price of a stock adjusted for any |
+|            | numeric | corporate actions like dividends, stock       |
+|            |         | splits, or other events that could affect the |
+|            |         | stock price.                                  |
++------------+---------+-----------------------------------------------+
+| adjHigh    | numeric | The highest price of a stock during a trading |
+|            |         | day, adjusted for any corporate actions       |
++------------+---------+-----------------------------------------------+
+| adjLow     | numeric | The lowest price of a stock during a trading  |
+|            |         | day, adjusted for any corporate actions.      |
++------------+---------+-----------------------------------------------+
+| adjOpen    | numeric | The opening price of a stock at the beginning |
+|            |         | of a trading day, adjusted for any corporate  |
+|            |         | actions.                                      |
++------------+---------+-----------------------------------------------+
+| adjVolume  | numeric | The trading volume of a stock adjusted for    |
+|            |         | any corporate actions. This can provide a     |
+|            |         | clearer picture of tranding activity.         |
++------------+---------+-----------------------------------------------+
+| divCash    | Binary  | The amount of money paid by a company to its  |
+|            |         | shareholders as a portion of its profits.     |
+|            |         | Dividends are typically paid on a per-share   |
+|            |         | basis                                         |
++------------+---------+-----------------------------------------------+
+| s          | Binary  | If a stock undergoes a stock split, the split |
+| plitFactor |         | factor indicates the ratio by which the       |
+|            |         | shares were split. For instance, a 2-for-1    |
+|            |         | split means that for every old share, you now |
+|            |         | have 2 new shares.                            |
++------------+---------+-----------------------------------------------+
 
 ```{r}
 # Load necessary packages
