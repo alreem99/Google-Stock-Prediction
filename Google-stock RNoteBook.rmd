@@ -1,0 +1,1246 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  markdown: 
+  wrap: 72
+---
+
+\# **Closing price of Google Stock Prediction**
+
+\# 1. Problem
+
+Predicting the closing price of a stock is a complex problem because of several challenges. Stock prices are influenced by a multitude of factors such as market trends, Analyzing and incorporating all these factors accurately into a predictive model is a complex task. Market volatility makes predicting stock prices accurately challenging. Data Quality and Quantity, the pursuit of solving this problem is crucial because accurate stock price predictions have significant implications for investors, financial institutions, and businesses. Accurate predictions can aid investors in making informed decisions. The importance of predicting stock prices lies in its implications for investors, financial institutions, and businesses, it can potentially help investors make more informed decisions about buying, selling, or holding stocks, aiding in risk.
+
+# 2. Data mining Task
+
+In our project, we will use two data mining tasks to help us predict the closing price of a stock. two of the methods you can consider are classification and clustering. For classification, we will train our model to be able to classify the close price based on a set of attributes such as volume, open, high, low, length etc. For clustering, we will partition closing prices into subnets or clusters, where they are similar to prices in cluster but dissimilar to prices in other clusters based on the attributes Low, Heigh, Open, volume, adjClose, adjHigh.
+
+# 3. Data
+
+Our dataset is from the source: <https://www.kaggle.com/datasets/shreenidhihipparagi/google-stock-prediction>
+
+Number of Attributes: 14
+
+Number of objects: 1258
+
+Attribute characteristics:
+
++------------+---------+-----------------------------------------------+ \| Attribute \| Data \| Description \| \| Name \| Type \| \| +------------+---------+-----------------------------------------------+ \| symbol \| unique \| Name of company \| \| \| value \| \| +------------+---------+-----------------------------------------------+ \| date \| numeric \| date: day, month, and year. \| +------------+---------+-----------------------------------------------+ \| close \| numeric \| closing price of a stock is the final price \| \| \| \| at which a stock is traded on a given trading \| \| \| \| day. \| +------------+---------+-----------------------------------------------+ \| high \| numeric \| The highest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| low \| numeric \| The lowest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| open \| numeric \| The price of a stock at the beginning of a \| \| \| \| trading day. It's the price at which the \| \| \| \| first trade occurred on that day. \| +------------+---------+-----------------------------------------------+ \| Volume \| numeric \| The total number of shares traded during a \| \| \| \| trading day. Volume is a measure of market \| \| \| \| activity and liquidity for a stock \| +------------+---------+-----------------------------------------------+ \| adjClose \| \| The closing price of a stock adjusted for any \| \| \| numeric \| corporate actions like dividends, stock \| \| \| \| splits, or other events that could affect the \| \| \| \| stock price. \| +------------+---------+-----------------------------------------------+ \| adjHigh \| numeric \| The highest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions \| +------------+---------+-----------------------------------------------+ \| adjLow \| numeric \| The lowest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions. \| +------------+---------+-----------------------------------------------+ \| adjOpen \| numeric \| The opening price of a stock at the beginning \| \| \| \| of a trading day, adjusted for any corporate \| \| \| \| actions. \| +------------+---------+-----------------------------------------------+ \| adjVolume \| numeric \| The trading volume of a stock adjusted for \| \| \| \| any corporate actions. This can provide a \| \| \| \| clearer picture of tranding activity. \| +------------+---------+-----------------------------------------------+ \| divCash \| Binary \| The amount of money paid by a company to its \| \| \| \| shareholders as a portion of its profits. \| \| \| \| Dividends are typically paid on a per-share \| \| \| \| basis \| +------------+---------+-----------------------------------------------+ \| s \| Binary \| If a stock undergoes a stock split, the split \| \| plitFactor \| \| factor indicates the ratio by which the \| \| \| \| shares were split. For instance, a 2-for-1 \| \| \| \| split means that for every old share, you now \| \| \| \| have 2 new shares. \| +------------+---------+-----------------------------------------------+
+
+```{r}
+# Load necessary packages
+if (!require(caret)) {
+  install.packages("caret")
+}
+if (!require(cluster)) {
+  install.packages("cluster")
+}
+if (!require(fpc)) {
+  install.packages("fpc")
+}
+if (!require(ggplot2)) {
+  install.packages("ggplot2")
+}
+library(caret)
+library(cluster)
+library(fpc)
+library(ggplot2)
+```
+
+-   **Sample of row**
+
+```{r}
+dataset = read.csv('GOOG.csv') 
+```
+
+```{r}
+View(dataset)
+print(dataset)
+```
+
+we removed the attributes (symbol, divCash, splitFactor) as they have one value only so we do not need them
+
+*Convert the date column to a date format*
+
+```{r}
+dataset$date <- as.Date(dataset$date, format = "%Y-%m-%d %H:%M:%S")
+```
+
+```{r}
+print(dataset)
+str(dataset)
+```
+
+-   **Statiscal summarise**
+
+```{r}
+summary(dataset)
+```
+
+mean of closing price Using the mean closing price can serve as a basic reference point or a simple benchmark for forecasting future stock prices. The mean closing price is the average price at which a stock has closed over a specific period.
+
+```{r}
+mean(dataset$close)
+```
+
+**variance Code**
+
+The concept of variance in the context of closing prices for stock prediction serves to quantify the spread or dispersion of the closing prices around their mean or average value. It provides a measure of how much the actual closing prices deviate from the average closing price over a specific period.
+
+```{r}
+var(dataset$close)
+```
+
+-   **Statiscal summarise**
+
+Summaries for all numeric attributes and their outliers and boxplots.
+
+```{r}
+#stastistical measures
+#summaries
+summary(dataset$close)
+summary(dataset$high)
+summary(dataset$low)
+summary(dataset$open)
+summary(dataset$volume)
+summary(dataset$adjClose)
+summary(dataset$adjHigh)
+summary(dataset$adjLow)
+summary(dataset$adjOpen)
+summary(dataset$adjVolume)
+```
+
+-   **Outliers**
+
+```{r}
+#outliers
+boxplot.stats(dataset$close)$out
+boxplot.stats(dataset$high)$out
+boxplot.stats(dataset$low)$out
+boxplot.stats(dataset$open)$out
+boxplot.stats(dataset$volume)$out
+boxplot.stats(dataset$adjClose)$out
+boxplot.stats(dataset$adjHigh)$out
+boxplot.stats(dataset$adjLow)$out
+boxplot.stats(dataset$adjOpen)$out
+boxplot.stats(dataset$adjVolume)$out
+```
+
+-   **Boxplots**
+
+```{r}
+#boxplots
+boxplot(dataset$close)
+boxplot(dataset$high)
+boxplot(dataset$low)
+boxplot(dataset$open)
+boxplot(dataset$volume)
+boxplot(dataset$adjClose)
+boxplot(dataset$adjHigh)
+boxplot(dataset$adjLow)
+boxplot(dataset$adjOpen)
+boxplot(dataset$adjVolume)
+```
+
+-   **Plotting methods**
+
+-   **Scatter Plot**
+
+This scatter plot helps us to determine whether the closing price and volume are correlated to each other or not, it shows that the two attributes are corelated and have proportional relationship.
+
+```{r}
+with(dataset, plot(volume, close))
+```
+
+-   **Barplot**
+
+The Bar plot represents the closing price and date in dataset. It indicates that closing prices at the end of a traded day are increasing or decreasing depending on the date.
+
+```{r}
+barplot(height = dataset$close, names.arg = dataset$date, xlab = "Date", ylab = "Closing price", main = "date vs Close")
+```
+
+-   **Histogram**
+
+This Histogram represents the frequency of a stock closing price in the dataset. After observation, we noticed that the most values lie in between 1000 to 1200.
+
+```{r}
+hist(dataset$close)
+```
+
+# 4. Data preprocessing
+
+-   **Raw dataset**
+
+Here is our data set before preprocessing
+
+```{r}
+#dataset before preprocessing
+print(dataset)
+```
+
+-   **Checking for missing values**
+
+Data cleaning, including handling missing values like NULLs, is crucial before utilizing data for analysis or modeling. It's important to get the best quality of analysis. Such as accuracy where missing or incorrect data can skew analysis, leading to inaccurate insights or predictions. And clean data ensures the reliability of your findings, reducing the risk of making decisions based on flawed information.
+
+*to find the total null values in the dataset #Checking NULL, FALSE means no null, TRUE cells means the value of the cell is null*
+
+```{r}
+is.na(dataset)
+sum(is.na(dataset))
+
+print("Since there is no NULL values we don't need to remove any rows")
+```
+
+In our data since there are no Null values, we don't need to remove any rows.
+
+-   **Detecting and removing the outliers**
+
+Since most attributes in our dataset are numeric and removing outliers will affect our calculations and prediction, we will remove closing price and volumes outliers only.
+
+```{r}
+#dataset before removing outliers
+print(dataset)
+summary(dataset)
+str(dataset)
+
+#removing close outlier
+outliers <- boxplot(dataset$close, plot=FALSE)$out
+dataset <- dataset[-which(dataset$close %in% outliers),]
+boxplot.stats(dataset$close)$out
+
+#removing volume's outlier
+outliers <- boxplot(dataset$volume, plot=FALSE)$out
+dataset <- dataset[-which(dataset$volume %in% outliers),]
+boxplot.stats(dataset$volume)$out
+
+#data set after removing outliers
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+-   **Data transformation**
+
+**Feature selection**
+
+Remove Redundant Features
+
+```{r}
+# load the library        
+library(mlbench)
+library(caret)
+library(ggplot2)
+library(lattice)
+
+# calculate correlation matrix
+correlationMatrix <- cor(dataset[,3:10])
+
+# summarize the correlation matrix
+print(correlationMatrix)
+
+# find attributes that are highly corrected (ideally >0.75)
+highlyCorrelated <- findCorrelation(correlationMatrix, cutoff=0.5 )
+
+# print indexes of highly correlated attributes
+print(highlyCorrelated)
+```
+
+-   **Normalization**
+
+dataset before normalization
+
+```{r}
+#dataset before normalization 
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+normalization was performed to ensure consistent scaling of the data. The normalization technique applied was the max-min normalization. This technique rescales the values of specific attributes within a defined range between 0 and 1.
+
+We can use the normalized dataset provides a more uniform and comparable representation of the attributes, enabling accurate analysis and modeling for stock predaction with result as shown.
+
+```{r}
+normalize <- function(x) {return ((x - min(x)) / (max(x) - min(x)))}
+dataWithoutNormalization <- dataset
+dataset$close<-normalize(dataWithoutNormalization$close)
+dataset$volume<-normalize(dataWithoutNormalization$volume)
+dataset$open<-normalize(dataWithoutNormalization$open)
+dataset$low <-normalize(dataWithoutNormalization$low)
+dataset$high <-normalize(dataWithoutNormalization$high)
+
+```
+
+dataset after normalization
+
+```{r}
+#dataset after normalization 
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+-   **Discretization**
+
+dataset before Discretization
+
+```{r}
+#dataset before Discretization 
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+we used the Discretization technique on our class label "close" to simplify it as it has a large continuous values, we made them fall into intervals, to make it easier to analyze
+
+and we chose the value 0.2957251 as it the mean value for the closing
+
+```{r}
+dataset$close <- ifelse(dataset$close <= 0.2957251 , "low","High")
+print(dataset)
+```
+
+we discretized it into two categories (low, high) based on the maen, low meaning it is less than the mean of the close , and high meaning it is equal to or higher than the mean.
+
+Encoding We encoded close data into factors, which would help the model read this data easily
+
+```{r}
+
+dataset$close <- factor(dataset$close,levels = c("low", "High"), labels = c("1", "2"))
+
+print(dataset)
+```
+
+dataset after Discretization
+
+```{r}
+#dataset after Discretization 
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+summary after preprocessing after preprocessing the data for stock price prediction, several steps are taken to refine, clean, and prepare the data for analysis and modeling. These preprocessing steps aim to enhance the quality and reliability of the data for more accurate stock price prediction.
+
+dataset after preprocessing
+
+```{r}
+#dataset after preprocessing 
+print(dataset)
+summary(dataset)
+str(dataset)
+```
+
+**Feature selection**
+
+Feature selection is a process of selecting a subset of relevant features (or attributes) from the original set of features in a dataset. The goal of feature selection is to choose the most relevant and important features, thereby reducing dimensionality, and improving model performance.
+
+#Feature selection ,Feature selection using Recursive Feature Elimination or RFE
+
+```{r}
+library(mlbench)
+library(caret)
+
+
+# define the control using a random forest selection function 
+# number=12 means the length of the list
+control <- rfeControl(functions=rfFuncs, method="cv", number=11)
+# run the RFE algorithm from column 1 to 11  
+results <- rfe(dataset[,1:10],dataset[,11], sizes=c(1:10), rfeControl=control)
+```
+
+summarize the results
+
+```{r}
+print(results)
+```
+
+list the chosen features
+
+```{r}
+predictors(results)
+```
+
+plot the results
+
+```{r}
+plot(results, type=c("h", "o"))
+```
+
+# 5. Data Mining Techniques
+
+We did both supervised and unsupervised learning techniques on our dataset (Google stock prediction), which involves classification and clustering methods, for classification we did a partitioning method called the train-test split, which splits the dataset into two subsets of different ratios, and we implemented three algorithms to form 9 different decision trees.
+
+# 6. Evaluation and Comparison
+
+-   **Classification**
+
+We will choose the attributes with the highest importance (from feature selection) to create a tree:
+
+1.  Dividing the dataset:
+
+we divided our dataset into two divisions for each split:
+
+first one 70-30, which means Training(70%) and Testing(30%):
+
+```{r}
+# a fixed random seed to make results reproducible
+set.seed(1234)
+
+# 1.Split the datasets into two subsets: Training(70%) and Testing(30%):
+ind1 <- sample(2, nrow(dataset), replace=TRUE, prob=c( 0.70, 0.30))
+trainData  <- dataset[ind1==1,]
+testData <- dataset[ind1==2,]
+```
+
+2.  Determine the predictor attributes and the class label attribute.( the formula):
+
+```{r}
+library(party) 
+library(grid) 
+#myFormula 
+myFormula <- close ~volume+open+high+low
+
+```
+
+1.  Build a decision tree using Information gain:
+
+Information gain is a concept used in the field of machine learning and decision tree algorithms. It is a measure of the effectiveness of a particular attribute in classifying data. In the context of decision trees, information gain helps determine the order in which attributes are chosen for splitting the data.
+
+```{r}
+dataset_ctree <- ctree(myFormula, data=trainData)
+table(predict(dataset_ctree), trainData$close)
+# 4.Print and plot the tree:
+
+print(dataset_ctree)
+plot(dataset_ctree, type="simple")
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+2.  Building the Tree using Gini Index(CART)
+
+The Gini Index is another criterion used in decision tree algorithms, particularly in the context of the Classification and Regression Trees (CART) algorithm. Like information gain, the Gini Index is used to evaluate the impurity or homogeneity of a dataset.
+
+The Gini Index for a specific attribute measures the probability of incorrectly classifying a randomly chosen element in the dataset. A lower Gini Index indicates a purer or more homogeneous set. In the context of decision trees, the attribute with the lowest Gini Index is chosen as the split attribute.
+
+```{r}
+# For decision tree model
+install.packages("rpart")
+library(rpart)
+# For data visualization
+library(rpart.plot)
+
+dataset.cart <- rpart(myFormula, data = trainData, method = "class", parms = list(split = "gini"))
+```
+
+Visualizing the unpruned tree
+
+```{r}
+library(rpart.plot)
+rpart.plot(dataset.cart)
+```
+
+Checking the order of variable importance
+
+```{r}
+dataset.cart$variable.importance
+pred.tree = predict(dataset.cart, testData, type = "class")
+
+table(pred.tree,testData$close)
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+3.  Building the Tree using Gain ratio(C5)
+
+The Gain Ratio is used to select the attribute that maximizes the Information Gain while avoiding the bias towards attributes with many values. It provides a more balanced measure for attribute selection in decision tree construction.
+
+While Information Gain simply measures the reduction in entropy or uncertainty, Gain Ratio takes into account the intrinsic information of an attribute. It aims to penalize attributes that may have a large number of values, potentially leading to overfitting.
+
+```{r}
+install.packages("caret")
+install.packages("C50")
+install.packages("printr")
+
+library(C50)
+library(printr)
+library(caret)
+#train using the trainData and create the c5.0 gain ratio tree
+CloseTree <- C5.0(myFormula, data=trainData)
+summary(CloseTree)
+plot(CloseTree)
+```
+
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(CloseTree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+second one 60-40, which means Training(60%) and Testing(40%):
+
+```{r}
+# a fixed random seed to make results reproducible
+set.seed(1234)
+
+# 1.Split the datasets into two subsets: Training(60%) and Testing(40%):
+ind1 <- sample(2, nrow(dataset), replace=TRUE, prob=c(0.60 , 0.40))
+trainData  <- dataset[ind1==1,]
+testData <- dataset[ind1==2,]
+```
+
+2.  Determine the predictor attributes and the class label attribute.( the formula):
+
+```{r}
+library(party) 
+library(grid)
+#myFormula 
+myFormula <- close ~volume+open+high+low
+```
+
+3.  Build a decision tree using training set and check the Prediction:
+
+```{r}
+dataset_ctree <- ctree(myFormula, data=trainData)
+table(predict(dataset_ctree), trainData$close)
+# 4.Print and plot the tree:
+
+print(dataset_ctree)
+plot(dataset_ctree, type="simple")
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+2.  Building the Tree using Gini Index(CART)
+
+```{r}
+# For decision tree model
+install.packages("rpart")
+library(rpart)
+# For data visualization
+library(rpart.plot)
+
+dataset.cart <- rpart(myFormula, data = trainData, method = "class", parms = list(split = "gini"))
+```
+
+Visualizing the unpruned tree
+
+```{r}
+rpart.plot(dataset.cart)
+```
+
+Checking the order of variable importance
+
+```{r}
+dataset.cart$variable.importance
+pred.tree = predict(dataset.cart, testData, type = "class")
+
+table(pred.tree,testData$close)
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+3.  Building the Tree using Gain ratio(C5)
+
+```{r}
+
+
+plot(model)
+install.packages("caret")
+install.packages("C50")
+install.packages("printr")
+
+library(C50)
+library(printr)
+library(caret)
+#train using the trainData and create the c5.0 gain ratio tree
+CloseTree <- C5.0(myFormula, data=trainData)
+
+summary(CloseTree)
+plot(CloseTree)
+```
+
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(CloseTree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+Third one 80-20, which means Training(80%) and Testing(20%):
+
+```{r}
+# a fixed random seed to make results reproducible
+set.seed(1234)
+
+# 1.Split the datasets into two subsets: Training(80%) and Testing(20%):
+ind1 <- sample(2, nrow(dataset), replace=TRUE, prob=c(0.80 , 0.20))
+trainData  <- dataset[ind1==1,]
+testData <- dataset[ind1==2,]
+```
+
+2.Determine the predictor attributes and the class label attribute.( the formula):
+
+```{r}
+library(party)  
+library(grid)
+#myFormula 
+myFormula <- close ~volume+open+high+low
+
+```
+
+3.Build a decision tree using training set and check the Prediction:
+
+```{r}
+dataset_ctree <- ctree(myFormula, data=trainData)
+table(predict(dataset_ctree), trainData$close)
+# 4.Print and plot the tree:
+
+print(dataset_ctree)
+plot(dataset_ctree, type="simple")
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+2.  Building the Tree using Gini Index(CART)
+
+```{r}
+# For decision tree model
+install.packages("rpart")
+library(rpart)
+# For data visualization
+library(rpart.plot)
+
+dataset.cart <- rpart(myFormula, data = trainData, method = "class", parms = list(split = "gini"))
+```
+
+Visualizing the unpruned tree
+
+```{r}
+library(rpart.plot)
+rpart.plot(dataset.cart)
+```
+
+Checking the order of variable importance
+
+```{r}
+dataset.cart$variable.importance
+pred.tree = predict(dataset.cart, testData, type = "class")
+
+table(pred.tree,testData$close)
+```
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(dataset_ctree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+3.  Building the Tree using Gain ratio(C5)
+
+```{r}
+install.packages("caret")
+install.packages("C50")
+install.packages("printr")
+
+library(C50)
+library(printr)
+library(caret)
+#train using the trainData and create the c5.0 gain ratio tree
+CloseTree <- C5.0(myFormula, data=trainData)
+summary(CloseTree)
+plot(CloseTree)
+```
+
+
+```{r}
+# 5.Use the constructed model to predict the class labels of test data:
+testPred <- predict(CloseTree, newdata = testData)
+result<-table(testPred, testData$close)
+result
+```
+
+```{r}
+# Evaluate the model and create confusion matrix
+install.packages("caret")
+install.packages('e1071', dependencies=TRUE)
+library(e1071)
+library(caret)
+
+co_result <- confusionMatrix(result)
+
+print(co_result)
+sensitivity(as.table(co_result))
+specificity(as.table(co_result))
+precision(as.table(co_result))
+
+acc <- co_result$overall["Accuracy"]
+acc
+```
+
+
+after doing all the three methods we have noticed that in IG and Gini Index(CART)
+
+the Training(70%) and Testing(30%) has sensitivity = 0.9959016 specificity = 0.9685039 Accuracy = 0.9865229
+
+the Training(60%) and Testing(40%) has sensitivity = 0.9969512 specificity = 0.9710983 Accuracy = 0.988024
+
+the Training(80%) and Testing(20%) has sensitivity = 0.9940476 specificity = 0.9655172 Accuracy = 0.9843137
+
+For the gain ratio
+the Training(70%) and Testing(30%) has sensitivity = 0.9959016 specificity = 0.9685039 Accuracy = 0.9865229
+
+the Training(60%) and Testing(40%) has sensitivity = 0.9969512 specificity = 0.9710983 Accuracy = 0.988024
+
+the Training(80%) and Testing(20%) has sensitivity = 0.9940476 specificity = 0.9655172 Accuracy = 0.9843137
+
+
+which means that the best spilting in our dataset is the *Training(60%) and Testing(40%)* because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8
+
+-   **Clustering**
+
+Clustering is unsupervised learning, it doesn't use a class label for implementing the cluster. To implement the clusters, we used the K-mean algorithm, which is an algorithm that produces K clusters, which each cluster is represented by the center point of the cluster and assigns each object to the nearest cluster, then iteratively recalculates the center, and reassigns the object until the center point of each cluster does not change that means the object in the right cluster.
+
+factoextra packages is used to help in implementing the clustering technique. scale() method is used for scaling and centering of data set objects, Kmeans() method to find a specified number of clusters. fviz_cluster() method to visualize the clusters diagram. silhouette() method to calculate the average for each cluster, fviz_silhouette() to visualize it, and fviz_nbclust() method to set a comparison between the three different numbers of clusters to find the optimal number by evaluating the clusters according to how well the clusters are separated, and how compact the clusters are. In both techniques, we used the method set.seed() with the same random number each time we try a different size to ensure that we get the same result each time.
+
+Data types should be transformed into numeric types before clustering.
+
+```{r}
+# prepreocessing 
+#Data types should be transformed into numeric types before clustering.
+dataset <- scale(close)
+View(dataset)
+```
+
+-   Apply k-means clustering for value 4
+
+```{r}
+# k-means clustering to find 4 clusters 
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(dataset, 4)
+```
+
+visualization of 4 clusters
+
+```{r}
+# visualize clustering
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = dataset)
+```
+
+average silhouette width for each clusters
+
+```{r}
+#average silhouette for each clusters 
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(dataset)) 
+#a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+total within-cluster sum of square and BCubed precision and recall
+
+```{r}
+# Total sum of squares
+kmeans.result$tot.withinss
+
+#bcubed metrix that take the avg of precision&recall
+library('DPBBM')
+c = kmeans.result$cluster
+BCubed_metric(kmeans.result$cluster, 0.5)
+```
+
+print the clustering result
+
+```{r}
+# print the clustering result
+print(kmeans.result)
+```
+
+Apply k-means clustering for value 3
+
+```{r}
+# run k-means clustering to find 3 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(dataset, 3)
+```
+
+visualization of 3 clusters
+
+```{r}
+# visualize clustering
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = dataset)
+```
+
+average silhouette width for each clusters
+
+```{r}
+#average silhouette for each clusters 
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(dataset)) 
+#a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+total within-cluster sum of square and BCubed precision and recall
+
+```{r}
+# Total sum of squares
+kmeans.result$tot.withinss
+
+#bcubed metrix that take the avg of precision&recall
+library('DPBBM')
+c = kmeans.result$cluster
+BCubed_metric(kmeans.result$cluster, 0.6)
+```
+
+print the clustering result
+
+```{r}
+# print the clustering result
+print(kmeans.result)
+```
+
+Apply k-means clustering for value 2
+
+```{r}
+# run k-means clustering to find 2 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(dataset, 2)
+```
+
+visualization of 3 clusters
+
+```{r}
+# visualize clustering
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = dataset)
+```
+
+average silhouette width for each clusters
+
+```{r}
+#average silhouette for each clusters 
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(dataset)) 
+#a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+total within-cluster sum of square and BCubed precision and recall
+
+```{r}
+# Total sum of squares
+kmeans.result$tot.withinss
+
+#bcubed metrix that take the avg of precision&recall
+library('DPBBM')
+c = kmeans.result$cluster
+BCubed_metric(kmeans.result$cluster, 0.6)
+```
+
+print the clustering result
+
+```{r}
+# print the clustering result
+print(kmeans.result)
+```
+
+kmeansruns() calls kmeans() to perform k-means clustering It initializes the k-means algorithm several times with random points from the data set as means. It estimates the number of clusters by index or average silhouette width
+
+```{r}
+install.packages("fpc")
+library(fpc)
+#kmeansruns() : It calls  kmeans() to perform  k-means clustering
+#It initializes the k-means algorithm several times with random points from the data set as means.
+#It estimates the number of clusters by index or average silhouette width
+kmeansruns.result <- kmeansruns(dataset)  
+kmeansruns.result
+fviz_cluster(kmeansruns.result, data = dataset)
+```
+
+k-mediods clustering with PAM
+
+```{r}
+#install.packages("cluster")
+library(cluster)
+# group into 4 clusters
+pam.result <- pam(dataset, 4)
+plot(pam.result)
+```
+
+Hierarchical Clustering draw a sample of 40 records from the dataset data, so that the clustering plot will not be over crowded
+
+```{r}
+##----Hierarchical Clustering of the Data-----##
+set.seed(2835)
+# draw a sample of 40 records from the dataset data, so that the clustering plot will not be over crowded
+idx <- sample(1:dim(dataset)[1], 40)
+dataset2 <- dataset[idx, ]
+## hiercrchical clustering
+library(factoextra) 
+hc.cut <- hcut(dataset2, k = 2, hc_method = "complete") # Computes Hierarchical Clustering and Cut the Tree
+
+```
+
+```{r}
+# Visualize dendrogram
+fviz_dend(hc.cut,rect = TRUE)  #logical value specifying whether to add a rectangle around groups.
+# Visualize cluster
+fviz_cluster(hc.cut, ellipse.type = "convex") # Character specifying frame type. Possible values are 'convex', 'confidence' etc
+
+```
+
+define function to compute average silhouette for k clusters using silhouette()
+
+```{r}
+silhouette_score <- function(k){ 
+  km <- kmeans(USArrests, centers = k,nstart=25) # if centers is a number, how many random sets should be chosen?
+  ss <- silhouette(km$cluster, dist(USArrests))
+  sil<- mean(ss[, 3])
+  return(sil)
+}
+```
+
+-   Optimal number of clusters:
+
+```{r}
+# k cluster range from 2 to 10
+k <- 2:10
+##  call  function fore k value
+avg_sil <- sapply(k, silhouette_score)  ##Apply a Function over a List or Vector
+plot(k, type='b', avg_sil, xlab='Number of clusters', ylab='Average Silhouette Scores', frame=FALSE)
+
+```
+
+silhouette method
+
+```{r}
+#install.packages("NbClust")
+library(NbClust)
+#a)fviz_nbclust() with silhouette method using library(factoextra) 
+fviz_nbclust(dataset, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+```
+
+```{r}
+#b) NbClust validation
+fres.nbclust <- NbClust(dataset, distance="euclidean", min.nc = 2, max.nc = 10, method="kmeans", index="all")
+```
+
+```{r}
+# Elbow method for determining the optimal number of clusters (k-means)
+wss <- numeric(length = 10)
+for (k in 1:10) {
+  kmeans_model <- kmeans(dataset, centers = k, nstart = 10)
+  wss[k] <- sum(kmeans_model$close)
+}
+```
+
+after doing 3 sizes of k and based the plot and drawing we have noticed that The best size is K 2 , it is Partition better than the other
+
+```{r}
+# Extract the total within-cluster sum of squares (TWSS)
+twss <- sum(kmeans.result$withinss)
+# Print the TWSS
+cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
+```
+
+\`\`\`{r} \# Evaluate BCubed precision and recall for k-medoids #The Close Price is an even more important metric BCUBED to use because it captures the closing value, making it useful for analyzing long-term trends and overall performance.
+
+#3- Calculate the BCubed Precision
+
+#3.1: Precision of acquired in 2-mean clusters after finding out how many acquired items are in each cluster
+
+acquired2Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster1=print(1\*100/1)
+
+acquired2Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
+
+PreOf2Cluster2=print(549\*100/770)
+
+#3.1: Precision of acquired in 3-mean clusters after finding out how many acquired items are in each cluster
+
+acquired3Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE)) PreOf3Cluster1=print(51\*100/63)
+
+acquired3Clust2\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE)) PreOf3Cluster2=print(498\*100/707)
+
+acquired3Clust3\<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE)) PreOf3Cluster3=print(1\*100/1)
+
+#3.1: Precision of acquired in 4-mean clusters after finding out how many acquired items are in each cluster
+
+acquired4Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE)) PreOf4Cluster1=print(438\*100/623)
+
+acquired4Clust2\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE)) PreOf4Cluster2=print(102\*100/134)
+
+acquired4Clust3\<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE)) PreOf4Cluster3=print(9\*100/13)
+
+acquired4Clust4\<-print(sum(dataset$close[kmeans.result$cluster =="4"]== "acquired", na.rm = TRUE))
+
+PreOf4Cluster4=print(1\*100/1)
+
+#4- Calculate the BCubed Recall #4.1: Recall of acquired in 2-mean clusters
+
+Recall1Clust1= print(1*100/550) Recall1Clust2= print(549*100/550)
+
+#4.2: Recall of acquired in 3-mean clusters
+
+Recall3Clust1= print(51*100/550) Recall3Clust2= print(498*100/550) Recall3Clust3= print(1\*100/550)
+
+#4.3: Recall of acquired in 4-mean clusters
+
+Recall4Clust1= print(438*100/550) Recall4Clust2= print(102*100/550) Recall4Clust3= print(9*100/550) Recall4Clust4= print(1*100/550)
+
+# 7. Findings
+
+Our dataset represents opening and closing prices of google stocks in market. Our goal was to predict higher closing prices that indicate a positive trend in Google stock. To have the best, accurate, and precise results we used several data mining preprocessing techniques that improve the efficiency of the data. applied several plotting methods was applied to help us understand our data. Based on plots we removed outliers, we didn't find any null or missing values. And then data transformation was applied to transform attribute values such as normalization discretization.
+
+Then we applied the data mining tasks, that are classification and clustering. For classification, we use the decision tree method to construct our model, 3 different sizes of training and testing data were used to get the best result for construction and evaluation. the following results for different sizes:
+
++--------------+------------------+------------------+------------------+
+|              | 70% Training and | 80% Training and | 60% Training and |
+|              |                  |                  |                  |
+|              | 30% Testing data | 20% Testing data | 40% Testing data |
++==============+==================+==================+==================+
++--------------+------------------+------------------+------------------+
+
+|             | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex |
+|---------------|-------|-------|-------|-------|------|-------|------|-------|--------|
+| Accuracy    | %98.6 |          | %98.6      | %98.4 |          | %98.4      | %98.8 |          | %98.8      |
+| precision   | %97.3 |          | %97.3      | %97.3 |          | %97.3      | %96   |          | %96        |
+| sensitivity | %99.5 |          | %99.5      | %99.4 |          | %99.4      | %99.4 |          | %99.4      |
+| specificity | %96.8 |          | %96.8      | %96.5 |          | %96.5      | %96.5 |          | %96.5      |
+
+In conclusion, the most accurate model and the best spilting in our dataset is the Training(60%) and Testing(40%) because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8 precision=%96
+
+For Clustering, 3 different sizes K were used in K-means algorithm to find the optimal number of clusters. average silhouette width for each K was calculated to conclude shown results.
+
+-   Number of cluster(K)= 4
+
+    average silhouette width=0.43, sum of squares= 1900.127
+
+    Recall and precision of acquired in 4-mean clusters BCubed precision= 70.30498 BCubed recall= 79.63636 BCubed precision= 76.1194 BCubed recall= 18.54545 BCubed precision= 69.23077 BCubed recall= 1.636364 BCubed precision= 100 BCubed recall= 0.1818182
+
+-   Number of cluster(K)= 3
+
+    average silhouette width=0.37, sum of squares= 2908.955
+
+    Recall and precision of acquired in 3-mean clusters BCubed precision= 80.95238 BCubed recall= 9.272727 BCubed precision= 70.43847 BCubed recall= 90.54545 BCubed precision= 100 BCubed recall= 0.1818182
+
+-   Number of cluster(K)= 2
+
+    Recall and precision of acquired in 2-mean clusters
+
+    BCubed precision= 100 BCubed recall= 0.1818182 BCubed precision= 71.2987 BCubed recall= 99.81818
+
+    average silhouette width=0.45, sum of squares= 4126
+
++------------------------------------+--------------+--------------+--------------+
+|                                    | K=4          | K=3          | K=2          |
++====================================+==============+==============+==============+
+| average silhouette width           | 0.43         | 0.37         | 0.45         |
++------------------------------------+--------------+--------------+--------------+
+| total withn-cluster sum of squares | 1900.127     | 2908.955     | 4126         |
++------------------------------------+--------------+--------------+--------------+
+| BCubed precision                   | 70.30498     | 80.95238     | 100          |
++------------------------------------+--------------+--------------+--------------+
+| BCubed recall                      | 79.63636     | 9.272727     | 0.1818182    |
++------------------------------------+--------------+--------------+--------------+
+
+Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.\
+At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
+
+# 8. Refrences
+
+[1]"Google Stock Prediction," www.kaggle.com. <https://www.kaggle.com/datasets/shreenidhihipparagi/google-stock-prediction> (accessed Dec. 01, 2023).
+
+[2] "As.date: Date conversion functions to and from character," RDocumentation, <https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/as.Date> (accessed Nov.13, 2023).
+
+[3]<https://www.facebook.com/jason.brownlee.39>, "Feature Selection with the Caret R Package," Machine Learning Mastery, Aug. 22, 2019. [https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/(accessed](https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/(accessed)%7B.uri%7D%20oct.%2010,%202023).
+
+[4]"RPubs - Data Mining: Classification with Decision Trees," rpubs.com. <https://rpubs.com/kjmazidi/195428> (accessed nov. 10, 2023). ‌
+
+[5]"RPubs - Classification and Regression Trees (CART) in R," rpubs.com. <https://rpubs.com/camguild/803096> (accessed nov. 10, 2023).
