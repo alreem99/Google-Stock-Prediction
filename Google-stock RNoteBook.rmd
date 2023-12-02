@@ -25,64 +25,8 @@ Number of Attributes: 14
 Number of objects: 1258
 
 Attribute characteristics:
-  
-  +------------+---------+-----------------------------------------------+
-  | Attribute  | Data    | Description                                   |
-  | Name       | Type    |                                               |
-  +------------+---------+-----------------------------------------------+
-  | symbol     | unique  | Name of company                               |
-  |            | value   |                                               |
-  +------------+---------+-----------------------------------------------+
-  | date       | numeric | date: day, month, and year.                   |
-  +------------+---------+-----------------------------------------------+
-  | close      | numeric | closing price of a stock is the final price   |
-  |            |         | at which a stock is traded on a given trading |
-  |            |         | day.                                          |
-  +------------+---------+-----------------------------------------------+
-  | high       | numeric | The highest price at which a stock traded     |
-  |            |         | during a specific trading day.                |
-  +------------+---------+-----------------------------------------------+
-  | low        | numeric | The lowest price at which a stock traded      |
-  |            |         | during a specific trading day.                |
-  +------------+---------+-----------------------------------------------+
-  | open       | numeric | The price of a stock at the beginning of a    |
-  |            |         | trading day. It's the price at which the      |
-|            |         | first trade occurred on that day.             |
-+------------+---------+-----------------------------------------------+
-| Volume     | numeric | The total number of shares traded during a    |
-|            |         | trading day. Volume is a measure of market    |
-|            |         | activity and liquidity for a stock            |
-+------------+---------+-----------------------------------------------+
-| adjClose   |         | The closing price of a stock adjusted for any |
-|            | numeric | corporate actions like dividends, stock       |
-|            |         | splits, or other events that could affect the |
-|            |         | stock price.                                  |
-+------------+---------+-----------------------------------------------+
-| adjHigh    | numeric | The highest price of a stock during a trading |
-|            |         | day, adjusted for any corporate actions       |
-+------------+---------+-----------------------------------------------+
-| adjLow     | numeric | The lowest price of a stock during a trading  |
-|            |         | day, adjusted for any corporate actions.      |
-+------------+---------+-----------------------------------------------+
-| adjOpen    | numeric | The opening price of a stock at the beginning |
-|            |         | of a trading day, adjusted for any corporate  |
-|            |         | actions.                                      |
-+------------+---------+-----------------------------------------------+
-| adjVolume  | numeric | The trading volume of a stock adjusted for    |
-|            |         | any corporate actions. This can provide a     |
-|            |         | clearer picture of tranding activity.         |
-+------------+---------+-----------------------------------------------+
-| divCash    | Binary  | The amount of money paid by a company to its  |
-|            |         | shareholders as a portion of its profits.     |
-|            |         | Dividends are typically paid on a per-share   |
-|            |         | basis                                         |
-+------------+---------+-----------------------------------------------+
-| s          | Binary  | If a stock undergoes a stock split, the split |
-| plitFactor |         | factor indicates the ratio by which the       |
-|            |         | shares were split. For instance, a 2-for-1    |
-|            |         | split means that for every old share, you now |
-|            |         | have 2 new shares.                            |
-+------------+---------+-----------------------------------------------+
+
++------------+---------+-----------------------------------------------+ \| Attribute \| Data \| Description \| \| Name \| Type \| \| +------------+---------+-----------------------------------------------+ \| symbol \| unique \| Name of company \| \| \| value \| \| +------------+---------+-----------------------------------------------+ \| date \| numeric \| date: day, month, and year. \| +------------+---------+-----------------------------------------------+ \| close \| numeric \| closing price of a stock is the final price \| \| \| \| at which a stock is traded on a given trading \| \| \| \| day. \| +------------+---------+-----------------------------------------------+ \| high \| numeric \| The highest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| low \| numeric \| The lowest price at which a stock traded \| \| \| \| during a specific trading day. \| +------------+---------+-----------------------------------------------+ \| open \| numeric \| The price of a stock at the beginning of a \| \| \| \| trading day. It's the price at which the \| \| \| \| first trade occurred on that day. \| +------------+---------+-----------------------------------------------+ \| Volume \| numeric \| The total number of shares traded during a \| \| \| \| trading day. Volume is a measure of market \| \| \| \| activity and liquidity for a stock \| +------------+---------+-----------------------------------------------+ \| adjClose \| \| The closing price of a stock adjusted for any \| \| \| numeric \| corporate actions like dividends, stock \| \| \| \| splits, or other events that could affect the \| \| \| \| stock price. \| +------------+---------+-----------------------------------------------+ \| adjHigh \| numeric \| The highest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions \| +------------+---------+-----------------------------------------------+ \| adjLow \| numeric \| The lowest price of a stock during a trading \| \| \| \| day, adjusted for any corporate actions. \| +------------+---------+-----------------------------------------------+ \| adjOpen \| numeric \| The opening price of a stock at the beginning \| \| \| \| of a trading day, adjusted for any corporate \| \| \| \| actions. \| +------------+---------+-----------------------------------------------+ \| adjVolume \| numeric \| The trading volume of a stock adjusted for \| \| \| \| any corporate actions. This can provide a \| \| \| \| clearer picture of tranding activity. \| +------------+---------+-----------------------------------------------+ \| divCash \| Binary \| The amount of money paid by a company to its \| \| \| \| shareholders as a portion of its profits. \| \| \| \| Dividends are typically paid on a per-share \| \| \| \| basis \| +------------+---------+-----------------------------------------------+ \| s \| Binary \| If a stock undergoes a stock split, the split \| \| plitFactor \| \| factor indicates the ratio by which the \| \| \| \| shares were split. For instance, a 2-for-1 \| \| \| \| split means that for every old share, you now \| \| \| \| have 2 new shares. \| +------------+---------+-----------------------------------------------+
 
 ```{r}
 # Load necessary packages
@@ -120,6 +64,8 @@ we removed the attributes (symbol, divCash, splitFactor) as they have one value 
 *Convert the date column to a date format*
 
 ```{r}
+dataset=dataset[,2:12]
+View(dataset)
 dataset$date <- as.Date(dataset$date, format = "%Y-%m-%d %H:%M:%S")
 ```
 
@@ -401,7 +347,7 @@ library(caret)
 
 
 # define the control using a random forest selection function 
-# number=12 means the length of the list
+# number=11 means the length of the list
 control <- rfeControl(functions=rfFuncs, method="cv", number=11)
 # run the RFE algorithm from column 1 to 11  
 results <- rfe(dataset[,1:10],dataset[,11], sizes=c(1:10), rfeControl=control)
@@ -413,7 +359,7 @@ summarize the results
 print(results)
 ```
 
-list the chosen features
+list the chosen features , the result shows that the most important attripute is open , so in the classification we will use it for the predection
 
 ```{r}
 predictors(results)
@@ -576,7 +522,6 @@ summary(CloseTree)
 plot(CloseTree)
 ```
 
-
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
 testPred <- predict(CloseTree, newdata = testData)
@@ -601,6 +546,7 @@ precision(as.table(co_result))
 acc <- co_result$overall["Accuracy"]
 acc
 ```
+
 second one 60-40, which means Training(60%) and Testing(40%):
 
 ```{r}
@@ -714,8 +660,6 @@ acc
 
 ```{r}
 
-
-plot(model)
 install.packages("caret")
 install.packages("C50")
 install.packages("printr")
@@ -729,7 +673,6 @@ CloseTree <- C5.0(myFormula, data=trainData)
 summary(CloseTree)
 plot(CloseTree)
 ```
-
 
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
@@ -883,7 +826,6 @@ summary(CloseTree)
 plot(CloseTree)
 ```
 
-
 ```{r}
 # 5.Use the constructed model to predict the class labels of test data:
 testPred <- predict(CloseTree, newdata = testData)
@@ -909,7 +851,6 @@ acc <- co_result$overall["Accuracy"]
 acc
 ```
 
-
 after doing all the three methods we have noticed that in IG and Gini Index(CART)
 
 the Training(70%) and Testing(30%) has sensitivity = 0.9959016 specificity = 0.9685039 Accuracy = 0.9865229
@@ -918,15 +859,13 @@ the Training(60%) and Testing(40%) has sensitivity = 0.9969512 specificity = 0.9
 
 the Training(80%) and Testing(20%) has sensitivity = 0.9940476 specificity = 0.9655172 Accuracy = 0.9843137
 
-For the gain ratio
-the Training(70%) and Testing(30%) has sensitivity = 0.9959016 specificity = 0.9685039 Accuracy = 0.9865229
+For the gain ratio the Training(70%) and Testing(30%) has sensitivity = 0.9821429 specificity = 0.9953052 Accuracy = 0.9907692 and precision=0.990991
 
-the Training(60%) and Testing(40%) has sensitivity = 0.9969512 specificity = 0.9710983 Accuracy = 0.988024
+the Training(60%) and Testing(40%) has sensitivity = 0.9931973 specificity = 0.9863946 Accuracy = 0.9886621 and precision=0.9733333
 
-the Training(80%) and Testing(20%) has sensitivity = 0.9940476 specificity = 0.9655172 Accuracy = 0.9843137
+the Training(80%) and Testing(20%) has sensitivity = 0.9864865 specificity = 1 Accuracy = 0.995556 and precision=1
 
-
-which means that the best spilting in our dataset is the *Training(60%) and Testing(40%)* because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8
+which means that the best spilting in our dataset is the *Training(60%) and Testing(40%)* because it is has the highest sensitivity = 0.9940476 %99.4 , specificity = 0.9655172 %96.5 , Accuracy = 0.988024 %98.8 and in gain ratio has sensitivity = 0.9931973 specificity = 0.9863946 Accuracy = 0.9886621 and precision=0.9733333
 
 -   **Clustering**
 
@@ -939,7 +878,8 @@ Data types should be transformed into numeric types before clustering.
 ```{r}
 # prepreocessing 
 #Data types should be transformed into numeric types before clustering.
-dataset <- scale(close)
+dataset<-dataset[,3:11]
+dataset <- scale(dataset)
 View(dataset)
 ```
 
@@ -1027,7 +967,7 @@ kmeans.result$tot.withinss
 #bcubed metrix that take the avg of precision&recall
 library('DPBBM')
 c = kmeans.result$cluster
-BCubed_metric(kmeans.result$cluster, 0.6)
+BCubed_metric(kmeans.result$cluster, 0.5)
 ```
 
 print the clustering result
@@ -1074,7 +1014,7 @@ kmeans.result$tot.withinss
 #bcubed metrix that take the avg of precision&recall
 library('DPBBM')
 c = kmeans.result$cluster
-BCubed_metric(kmeans.result$cluster, 0.6)
+BCubed_metric(kmeans.result$cluster, 0.5)
 ```
 
 print the clustering result
@@ -1163,14 +1103,14 @@ fviz_nbclust(dataset, kmeans, method = "silhouette")+
 
 ```{r}
 #b) NbClust validation
-fres.nbclust <- NbClust(dataset, distance="euclidean", min.nc = 2, max.nc = 10, method="kmeans", index="all")
+fres.nbclust <- NbClust(dataset, distance="euclidean", min.nc = 2, max.nc = 9, method="kmeans", index="all")
 ```
 
 ```{r}
 # Elbow method for determining the optimal number of clusters (k-means)
-wss <- numeric(length = 10)
+wss <- numeric(length = 9)
 for (k in 1:10) {
-  kmeans_model <- kmeans(dataset, centers = k, nstart = 10)
+  kmeans_model <- kmeans(dataset, centers = k, nstart = 9)
   wss[k] <- sum(kmeans_model$close)
 }
 ```
@@ -1184,67 +1124,22 @@ twss <- sum(kmeans.result$withinss)
 cat(paste("Total Within-Cluster Sum of Squares (TWSS):", twss, "\n"))
 ```
 
-\`\`\`{r} \# Evaluate BCubed precision and recall for k-medoids #The Close Price is an even more important metric BCUBED to use because it captures the closing value, making it useful for analyzing long-term trends and overall performance.
-
-#3- Calculate the BCubed Precision
-
-#3.1: Precision of acquired in 2-mean clusters after finding out how many acquired items are in each cluster
-
-acquired2Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE))
-
-PreOf2Cluster1=print(1\*100/1)
-
-acquired2Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE))
-
-PreOf2Cluster2=print(549\*100/770)
-
-#3.1: Precision of acquired in 3-mean clusters after finding out how many acquired items are in each cluster
-
-acquired3Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE)) PreOf3Cluster1=print(51\*100/63)
-
-acquired3Clust2\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE)) PreOf3Cluster2=print(498\*100/707)
-
-acquired3Clust3\<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE)) PreOf3Cluster3=print(1\*100/1)
-
-#3.1: Precision of acquired in 4-mean clusters after finding out how many acquired items are in each cluster
-
-acquired4Clust1\<-print(sum(dataset$close[kmeans.result$cluster =="1"]== "acquired", na.rm = TRUE)) PreOf4Cluster1=print(438\*100/623)
-
-acquired4Clust2\<-print(sum(dataset$close[kmeans.result$cluster =="2"]== "acquired", na.rm = TRUE)) PreOf4Cluster2=print(102\*100/134)
-
-acquired4Clust3\<-print(sum(dataset$close[kmeans.result$cluster =="3"]== "acquired", na.rm = TRUE)) PreOf4Cluster3=print(9\*100/13)
-
-acquired4Clust4\<-print(sum(dataset$close[kmeans.result$cluster =="4"]== "acquired", na.rm = TRUE))
-
-PreOf4Cluster4=print(1\*100/1)
-
-#4- Calculate the BCubed Recall #4.1: Recall of acquired in 2-mean clusters
-
-Recall1Clust1= print(1*100/550) Recall1Clust2= print(549*100/550)
-
-#4.2: Recall of acquired in 3-mean clusters
-
-Recall3Clust1= print(51*100/550) Recall3Clust2= print(498*100/550) Recall3Clust3= print(1\*100/550)
-
-#4.3: Recall of acquired in 4-mean clusters
-
-Recall4Clust1= print(438*100/550) Recall4Clust2= print(102*100/550) Recall4Clust3= print(9*100/550) Recall4Clust4= print(1*100/550)
-
 # 7. Findings
 
 Our dataset represents opening and closing prices of google stocks in market. Our goal was to predict higher closing prices that indicate a positive trend in Google stock. To have the best, accurate, and precise results we used several data mining preprocessing techniques that improve the efficiency of the data. applied several plotting methods was applied to help us understand our data. Based on plots we removed outliers, we didn't find any null or missing values. And then data transformation was applied to transform attribute values such as normalization discretization.
 
 Then we applied the data mining tasks, that are classification and clustering. For classification, we use the decision tree method to construct our model, 3 different sizes of training and testing data were used to get the best result for construction and evaluation. the following results for different sizes:
 
-+--------------+------------------+------------------+------------------+
-|              | 70% Training and | 80% Training and | 60% Training and |
-|              |                  |                  |                  |
-|              | 30% Testing data | 20% Testing data | 40% Testing data |
-+==============+==================+==================+==================+
-+--------------+------------------+------------------+------------------+
++----------------+------------------+------------------+------------------+
+|                | 70% Training and | 80% Training and | 60% Training and |
+|                |                  |                  |                  |
+|                | 30% Testing data | 20% Testing data | 40% Testing data |
++================+==================+==================+==================+
+|                |                  |                  |                  |
++----------------+------------------+------------------+------------------+
 
 |             | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex | IG    | IG ratio | Gini andex |
-|---------------|-------|-------|-------|-------|------|-------|------|-------|--------|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | Accuracy    | %98.6 |          | %98.6      | %98.4 |          | %98.4      | %98.8 |          | %98.8      |
 | precision   | %97.3 |          | %97.3      | %97.3 |          | %97.3      | %96   |          | %96        |
 | sensitivity | %99.5 |          | %99.5      | %99.4 |          | %99.4      | %99.4 |          | %99.4      |
@@ -1274,17 +1169,17 @@ For Clustering, 3 different sizes K were used in K-means algorithm to find the o
 
     average silhouette width=0.45, sum of squares= 4126
 
-+------------------------------------+--------------+--------------+--------------+
-|                                    | K=4          | K=3          | K=2          |
-+====================================+==============+==============+==============+
-| average silhouette width           | 0.43         | 0.37         | 0.45         |
-+------------------------------------+--------------+--------------+--------------+
-| total withn-cluster sum of squares | 1900.127     | 2908.955     | 4126         |
-+------------------------------------+--------------+--------------+--------------+
-| BCubed precision                   | 70.30498     | 80.95238     | 100          |
-+------------------------------------+--------------+--------------+--------------+
-| BCubed recall                      | 79.63636     | 9.272727     | 0.1818182    |
-+------------------------------------+--------------+--------------+--------------+
++------------------------------------+-------------+-------------+-------------+
+|                                    | K=4         | K=3         | K=2         |
++====================================+=============+=============+=============+
+| average silhouette width           | 0.43        | 0.37        | 0.45        |
++------------------------------------+-------------+-------------+-------------+
+| total withn-cluster sum of squares | 1900.127    | 2908.955    | 4126        |
++------------------------------------+-------------+-------------+-------------+
+| BCubed precision                   | 70.30498    | 80.95238    | 100         |
++------------------------------------+-------------+-------------+-------------+
+| BCubed recall                      | 79.63636    | 9.272727    | 0.1818182   |
++------------------------------------+-------------+-------------+-------------+
 
 Since the highest average silhouette width is where the number of clusters equals to 2 it has the optimal number of clusters. The higher the average silhouette width the closer the objects within the same cluster to each other and as far as possible to the objects in the other cluster.\
 At the end, both models are helpful and helped us in predicting. But since our dataset is numeric and after doing the clustering and Classification we have noticed that the clustering fits more for the dataset because it's concept all about the numeric data.
